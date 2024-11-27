@@ -1,0 +1,9 @@
+{% extends '../base.html' %}
+
+{% block content %}
+    {% if object.project_type == 'video' %}
+        <iframe width="560" height="315" src="{{ object.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    {% elif object.project_type == 'site' %}
+        <iframe width="100%" frameborder="0" src="{{ object.url }}" height="800"></iframe>
+    {% endif %}
+{% endblock %}
