@@ -1,0 +1,21 @@
+{% extends '../base.html' %}
+
+{% block content %}
+    <h1>{{ type }} Usuários</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for obj in object_list %}
+            <tr>
+                <td><a href="{% url 'core:detail' obj.id %}">{{ obj.username }}</a></td>
+                <td>{{ obj.email }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

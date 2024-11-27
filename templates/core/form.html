@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+</head>
+<body>
+    <h1>Cadastro</h1>
+    <form action="{% url 'core:register' %}" method="post">
+        {% csrf_token %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        <label>{{ form.username.label }}</label>
+        {{ form.username }}
+
+        <label>{{ form.email.label }}</label>
+        {{ form.email }}
+
+        <label>{{ form.password.label }}</label>
+        {{ form.password }}
+
+        <button type="submit">Registrar</button>
+        <a href="{% url 'core:list' %}" class="btn btn-default">Cancelar</a>
+    </form>
+    <a href="{% url 'core:login' %}">Entrar</a>
+</body>
+</html>

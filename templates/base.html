@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Base{% endblock %}</title>
+    <link rel='stylesheet' type='text/css' media='screen' href="{% static 'css/main.css' %}">
+</head>
+<body>
+    <h1><a href="{% url 'core:dashboard' %}">Home</a></h1>
+    {% if user.is_authenticated %}
+        <form action="{% url 'core:logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Sair</button>
+        </form>
+
+        <a href="{% url 'core:detail' user.id %}">Minha conta</a>
+    {% else %}
+        <a href="{% url 'core:login' %}">Log In</a>
+    {% endif %}
+     <div class="content-wrapper">
+         {% block content %}
+         {% endblock %}
+     </div>
+</body>
+</html>

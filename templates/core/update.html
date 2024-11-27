@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Update</h1>
+    <form method="post">
+        {% csrf_token %}
+
+        {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+        {% endfor %}
+
+        <label>{{ form.username.label }}</label>
+        {{ form.username }}
+
+        <label>{{ form.email.label }}</label>
+        {{ form.email }}
+
+        <label>New {{ form.password.label }}</label>
+        {{ form.password }}
+
+        <button type="submit">Update</button>
+        <a href="{% url 'core:detail' object.id %}">Cancelar</a>
+        {% if object.active %}
+            <a href="{% url 'core:delete' object.id %}">Deletar</a>
+        {% else %}
+            <a href="{% url 'core:activate' object.id %}">Ativar</a>
+        {% endif %}
+    </form>
+</body>
+</html>
