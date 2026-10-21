@@ -1,3 +1,4 @@
+import { FirebaseError } from 'firebase/app'
 import { collection, doc, getDoc, getDocs, orderBy, query, Timestamp, where } from 'firebase/firestore'
 import { db } from '@/firebase'
 import type {
@@ -13,7 +14,7 @@ import type {
   Video,
 } from '@/types'
 
-interface Colecoes {
+export interface Colecoes {
   areas: Area
   tecnologias: Tecnologia
   equipe: Membro
@@ -59,4 +60,19 @@ export async function listarAtivos<K extends NomeColecao>(nome: K): Promise<Cole
 export async function obterConfig<K extends keyof Configs>(nome: K): Promise<Configs[K] | null> {
   const snap = await getDoc(doc(db, 'config', nome))
   return snap.exists() ? (snap.data() as Configs[K]) : null
+}
+
+/**
+ * Um documento publicado. Documentos ocultos são negados pelas Rules para visitantes;
+ * nesse caso (ou se não existir) devolve null.
+ */
+export async function obterAtivo<K extends NomeColecao>(nome: K, id: string): Promise<Colecoes[K] | null> {
+  try {
+    const snap = await getDoc(doc(db, nome, id))
+    if (!snap.exists() || snap.data().active !== true) return null
+    return converter<Colecoes[K]>(snap.id, snap.data())
+  } catch (e) {
+    if (e instanceof FirebaseError && e.code === 'permission-denied') return null
+    throw e
+  }
 }

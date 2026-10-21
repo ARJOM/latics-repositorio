@@ -105,6 +105,9 @@ const t = useScroller()
           <span class="rounded-full bg-secondary px-3 py-1 text-xs font-semibold text-primary">{{ tc.tag }}</span>
           <h3 class="mt-4 text-2xl font-bold">{{ tc.titulo }}</h3>
           <p class="mt-3 leading-relaxed text-muted-foreground">{{ tc.texto }}</p>
+          <RouterLink :to="`/tecnologias/${tc.id}`" class="mt-6 inline-flex items-center gap-2 font-semibold text-primary hover:underline">
+            Conhecer <ArrowRight :size="18" />
+          </RouterLink>
         </div>
         <img :src="tc.imagemUrl" alt="" loading="lazy" class="w-full rounded-2xl bg-muted" />
       </article>

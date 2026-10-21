@@ -33,6 +33,7 @@ export interface Texto {
   autor: string
   data: Date
   resumo: string
+  conteudo?: string
 }
 
 export interface Video {

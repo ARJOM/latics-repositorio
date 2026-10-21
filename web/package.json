@@ -13,8 +13,10 @@
     "promover": "tsx scripts/promover.ts"
   },
   "dependencies": {
+    "dompurify": "^3.4.17",
     "firebase": "^13.0.0",
     "lucide-vue-next": "^1.0.0",
+    "marked": "^18.1.1",
     "pinia": "^4.0.3",
     "vue": "^3.5.42",
     "vue-router": "^5.3.1"

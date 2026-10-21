@@ -28,6 +28,8 @@ const router = createRouter({
       component: PublicLayout,
       children: [
         { path: '', name: 'home', component: () => import('@/views/public/HomeView.vue'), meta: { title: 'LATICS — Grupo de Pesquisa em TIC e Saúde' } },
+        { path: 'textos-autorais/:id', name: 'texto', component: () => import('@/views/public/TextoDetalheView.vue'), meta: { title: 'Texto — LATICS' } },
+        { path: 'tecnologias/:id', name: 'tecnologia', component: () => import('@/views/public/TecnologiaDetalheView.vue'), meta: { title: 'Tecnologia — LATICS' } },
         { path: 'textos-autorais', name: 'textos', component: () => import('@/views/public/TextosAutoraisView.vue'), meta: { title: 'Textos Autorais — LATICS' } },
         { path: 'tecnologias', name: 'tecnologias', component: () => import('@/views/public/TecnologiasView.vue'), meta: { title: 'Tecnologias — LATICS' } },
         { path: 'videos', name: 'videos', component: () => import('@/views/public/VideosView.vue'), meta: { title: 'Vídeos — LATICS' } },

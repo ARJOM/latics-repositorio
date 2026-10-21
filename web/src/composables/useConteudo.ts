@@ -1,5 +1,5 @@
-import { ref, shallowRef, type Ref } from 'vue'
-import { listarAtivos, obterConfig, type NomeColecao } from '@/services/conteudo'
+import { ref, shallowRef, watch, type Ref } from 'vue'
+import { listarAtivos, obterAtivo, obterConfig, type Colecoes, type NomeColecao } from '@/services/conteudo'
 
 /** Carrega uma lista do Firestore ao montar o componente. */
 export function useLista<K extends NomeColecao>(nome: K) {
@@ -28,4 +28,30 @@ export function useConfig<K extends Parameters<typeof obterConfig>[0]>(
     .then((r) => r && (valor.value = { ...padrao, ...r }))
     .catch((e) => console.error(`Erro ao carregar config/${nome}:`, e))
   return valor
+}
+
+/** Carrega um documento publicado; recarrega quando o id muda. */
+export function useDocumento<K extends NomeColecao>(nome: K, id: Ref<string>) {
+  const item = shallowRef(null) as Ref<Colecoes[K] | null>
+  const carregando = ref(true)
+  const erro = ref(false)
+
+  watch(
+    id,
+    async (valor) => {
+      carregando.value = true
+      erro.value = false
+      try {
+        item.value = await obterAtivo(nome, valor)
+      } catch (e) {
+        console.error(`Erro ao carregar ${nome}/${valor}:`, e)
+        erro.value = true
+      } finally {
+        carregando.value = false
+      }
+    },
+    { immediate: true },
+  )
+
+  return { item, carregando, erro }
 }

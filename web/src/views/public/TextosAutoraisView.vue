@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { RouterLink } from 'vue-router'
 import { ArrowUpRight } from 'lucide-vue-next'
 import PageHeader from '@/components/site/PageHeader.vue'
 import EstadoLista from '@/components/site/EstadoLista.vue'
@@ -16,10 +17,10 @@ import { mesAno } from '@/utils/format'
   />
   <EstadoLista :carregando :erro :vazio="!textos.length">
   <div class="mx-auto grid max-w-6xl gap-6 px-4 py-16 md:grid-cols-2 lg:grid-cols-3">
-    <!-- O link para /textos-autorais/:id entra na fase 4 -->
-    <article
+    <RouterLink
       v-for="t in textos"
       :key="t.id"
+      :to="`/textos-autorais/${t.id}`"
       class="group flex flex-col rounded-2xl border border-border bg-card p-6 shadow-soft transition hover:-translate-y-1 hover:border-primary/40 hover:shadow-lift"
     >
       <div class="flex items-center justify-between text-xs">
@@ -32,7 +33,7 @@ import { mesAno } from '@/utils/format'
         <span class="font-medium">{{ t.autor }}</span>
         <ArrowUpRight :size="18" class="text-muted-foreground transition group-hover:text-primary" />
       </div>
-    </article>
+    </RouterLink>
   </div>
   </EstadoLista>
 </template>
