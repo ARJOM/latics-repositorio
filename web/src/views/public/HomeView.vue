@@ -17,9 +17,11 @@ import type { Component } from 'vue'
 import hero from '@/assets/hero.jpg'
 import about from '@/assets/about.jpg'
 import CarouselArrows from '@/components/site/CarouselArrows.vue'
+import ImagemProporcional from '@/components/site/ImagemProporcional.vue'
 import { useScroller } from '@/composables/useScroller'
 import { useConfig, useLista } from '@/composables/useConteudo'
 import { sitePadrao } from '@/services/padroes'
+import { proporcaoImagem } from '@/admin/secoes'
 
 const site = useConfig('site', sitePadrao)
 const { itens: areas } = useLista('areas')
@@ -79,7 +81,7 @@ const t = useScroller()
         class="group flex w-[85%] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition hover:-translate-y-1 hover:shadow-lift sm:w-[420px]"
       >
         <div class="relative h-56 overflow-hidden bg-brand">
-          <img v-if="area.imagemUrl" :src="area.imagemUrl" alt="" loading="lazy" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+          <ImagemProporcional v-if="area.imagemUrl" :src="area.imagemUrl" :proporcao="proporcaoImagem('areas')" class="h-full transition duration-500 group-hover:scale-105" />
           <component v-else :is="icones[area.icone] ?? FlaskConical" class="absolute inset-0 m-auto text-primary-foreground/90" :size="64" :stroke-width="1.4" />
         </div>
         <div class="p-6">
@@ -95,7 +97,7 @@ const t = useScroller()
       <h2 class="text-3xl font-extrabold md:text-4xl">Tecnologias desenvolvidas</h2>
       <CarouselArrows @prev="t.prev" @next="t.next" />
     </div>
-    <div :ref="(el) => (t.el.value = el as HTMLElement)" class="no-scrollbar flex snap-x snap-mandatory gap-6 overflow-x-auto">
+    <div :ref="(el) => (t.el.value = el as HTMLElement)" class="no-scrollbar flex snap-x snap-mandatory items-start gap-6 overflow-x-auto">
       <article
         v-for="tc in tecnologias"
         :key="tc.id"
@@ -109,7 +111,7 @@ const t = useScroller()
             Conhecer <ArrowRight :size="18" />
           </RouterLink>
         </div>
-        <img :src="tc.imagemUrl" alt="" loading="lazy" class="w-full rounded-2xl bg-muted" />
+        <ImagemProporcional :src="tc.imagemUrl" :proporcao="proporcaoImagem('tecnologias')" class="rounded-2xl" />
       </article>
     </div>
   </section>

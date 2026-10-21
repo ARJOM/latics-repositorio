@@ -2,8 +2,10 @@
 import { CalendarDays, MapPin } from 'lucide-vue-next'
 import PageHeader from '@/components/site/PageHeader.vue'
 import EstadoLista from '@/components/site/EstadoLista.vue'
+import ImagemProporcional from '@/components/site/ImagemProporcional.vue'
 import { useConfig, useLista } from '@/composables/useConteudo'
 import { extensaoPadrao } from '@/services/padroes'
+import { proporcaoImagem } from '@/admin/secoes'
 
 const extensaoConfig = useConfig('extensao', extensaoPadrao)
 const { itens: acoesExtensao, carregando, erro } = useLista('acoesExtensao')
@@ -17,7 +19,7 @@ import { mesAno } from '@/utils/format'
     :description="`Programa &quot;${extensaoConfig.programa}&quot;.`"
   />
   <section class="mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 md:grid-cols-2">
-    <img v-if="extensaoConfig.imagemUrl" :src="extensaoConfig.imagemUrl" alt="Estudantes em atividade de extensão" width="1200" height="800" loading="lazy" class="w-full rounded-3xl shadow-lift" />
+    <ImagemProporcional v-if="extensaoConfig.imagemUrl" :src="extensaoConfig.imagemUrl" :proporcao="proporcaoImagem('extensao')" alt="Estudantes em atividade de extensão" class="rounded-3xl shadow-lift" />
     <div>
       <h2 class="text-3xl font-extrabold">Sobre o programa</h2>
       <p class="mt-4 leading-relaxed text-muted-foreground">{{ extensaoConfig.descricao }}</p>

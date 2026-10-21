@@ -4,8 +4,10 @@ import { RouterLink, useRoute } from 'vue-router'
 import { ArrowLeft } from 'lucide-vue-next'
 import EmbedViewer from '@/components/site/EmbedViewer.vue'
 import EstadoLista from '@/components/site/EstadoLista.vue'
+import ImagemProporcional from '@/components/site/ImagemProporcional.vue'
 import NotFoundView from './NotFoundView.vue'
 import { useDocumento } from '@/composables/useConteudo'
+import { proporcaoImagem } from '@/admin/secoes'
 import { definirSeo } from '@/seo'
 import { registrarVisualizacao } from '@/services/estatisticas'
 
@@ -33,7 +35,7 @@ watch(tec, (t) => {
             <h1 class="mt-4 text-4xl font-extrabold md:text-5xl">{{ tec.titulo }}</h1>
             <p class="mt-4 text-lg leading-relaxed text-muted-foreground">{{ tec.texto }}</p>
           </div>
-          <img :src="tec.imagemUrl" alt="" class="w-full rounded-3xl bg-muted shadow-lift" />
+          <ImagemProporcional :src="tec.imagemUrl" :proporcao="proporcaoImagem('tecnologias')" carregamento="eager" class="rounded-3xl shadow-lift" />
         </div>
       </section>
       <section class="mx-auto max-w-6xl px-4 py-14">

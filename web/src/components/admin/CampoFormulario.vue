@@ -4,6 +4,7 @@ import { ImagePlus, Loader2, Plus, Trash2 } from 'lucide-vue-next'
 import type { Campo } from '@/admin/secoes'
 import { enviarImagem } from '@/services/admin'
 import { mensagemErro } from '@/utils/erros'
+import RecorteImagem from './RecorteImagem.vue'
 
 const props = defineProps<{ campo: Campo; pasta: string }>()
 const model = defineModel<unknown>()
@@ -36,15 +37,28 @@ const numero = computed({
   set: (v: number | '') => (model.value = v === '' ? null : Number(v)),
 })
 
-// Imagem
+// Imagem: com `proporcao`, o arquivo passa pelo recorte (que também reduz o tamanho) antes do envio.
 const enviando = ref(false)
 const erroUpload = ref('')
-async function escolherImagem(e: Event) {
+const paraRecortar = ref<File | null>(null)
+function escolherImagem(e: Event) {
   const arquivo = (e.target as HTMLInputElement).files?.[0]
   ;(e.target as HTMLInputElement).value = ''
   if (!arquivo) return
   erroUpload.value = ''
   if (!arquivo.type.startsWith('image/')) return (erroUpload.value = 'Escolha um arquivo de imagem.')
+  if (props.campo.proporcao) {
+    if (arquivo.size > 20 * 1024 * 1024) return (erroUpload.value = 'A imagem precisa ter no máximo 20 MB.')
+    paraRecortar.value = arquivo
+    return
+  }
+  enviar(arquivo)
+}
+function recortou(arquivo: File) {
+  paraRecortar.value = null
+  enviar(arquivo)
+}
+async function enviar(arquivo: File) {
   if (arquivo.size > 2 * 1024 * 1024) return (erroUpload.value = 'A imagem precisa ter no máximo 2 MB.')
   enviando.value = true
   try {
@@ -81,7 +95,7 @@ const alterarIndicadores = (lista: Indicador[]) => (model.value = lista)
     </select>
 
     <div v-else-if="campo.tipo === 'imagem'" class="flex flex-wrap items-center gap-4">
-      <div class="grid h-24 w-36 place-items-center overflow-hidden rounded-xl border border-border bg-muted">
+      <div class="grid h-24 place-items-center overflow-hidden rounded-xl border border-border bg-muted" :style="{ aspectRatio: campo.proporcao ?? 3 / 2 }">
         <img v-if="texto" :src="texto" alt="" class="h-full w-full object-cover" />
         <ImagePlus v-else :size="24" class="text-muted-foreground" />
       </div>
@@ -99,6 +113,14 @@ const alterarIndicadores = (lista: Indicador[]) => (model.value = lista)
         <input v-if="campo.obrigatorio" :value="texto" required tabindex="-1" class="sr-only" aria-hidden="true" />
       </div>
       <p v-if="erroUpload" class="w-full text-sm text-destructive">{{ erroUpload }}</p>
+      <RecorteImagem
+        v-if="campo.proporcao"
+        :arquivo="paraRecortar"
+        :proporcao="campo.proporcao"
+        :largura-max="campo.larguraMax"
+        @confirmar="recortou"
+        @cancelar="paraRecortar = null"
+      />
     </div>
 
     <div v-else-if="campo.tipo === 'indicadores'" class="space-y-2">
