@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — vindos do protótipo do Lovable (ARJOM/modern-prototype-refresh, src/styles.css).
+ * O bloco @theme inline expõe cada variável como utilitário do Tailwind (ex.: --color-primary -> bg-primary).
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-navy: var(--navy);
+  --color-navy-foreground: var(--navy-foreground);
+  --color-soft: var(--soft);
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --shadow-soft: var(--shadow-soft);
+  --shadow-lift: var(--shadow-lift);
+}
+
+:root {
+  --radius: 0.875rem;
+  --background: oklch(0.993 0.003 220);
+  --foreground: oklch(0.2 0.1 268);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.1 268);
+  --primary: oklch(0.57 0.12 230);
+  --primary-foreground: oklch(0.99 0 0);
+  --secondary: oklch(0.95 0.025 215);
+  --secondary-foreground: oklch(0.2 0.1 268);
+  --muted: oklch(0.965 0.01 230);
+  --muted-foreground: oklch(0.48 0.04 260);
+  --accent: oklch(0.7 0.14 165);
+  --accent-foreground: oklch(0.99 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.99 0 0);
+  --border: oklch(0.91 0.015 240);
+  --input: oklch(0.91 0.015 240);
+  --ring: oklch(0.57 0.12 230);
+  --navy: oklch(0.2 0.1 268);
+  --navy-foreground: oklch(0.97 0.01 230);
+  --soft: oklch(0.9 0.035 210);
+  --gradient-brand: linear-gradient(135deg, var(--primary), var(--accent));
+  --shadow-soft: 0 1px 2px color-mix(in oklab, var(--navy) 6%, transparent), 0 8px 24px -12px color-mix(in oklab, var(--navy) 18%, transparent);
+  --shadow-lift: 0 20px 40px -18px color-mix(in oklab, var(--primary) 40%, transparent);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { letter-spacing: -0.02em; }
+}
+
+@utility bg-brand { background-image: var(--gradient-brand); }
+@utility text-brand {
+  background-image: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}

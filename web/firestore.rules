@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+    function signedIn() { return request.auth != null; }
+    function profile()  { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data; }
+    function hasProfile() { return signedIn() && exists(/databases/$(db)/documents/users/$(request.auth.uid)); }
+    function isAdmin()  { return hasProfile() && profile().active == true && profile().role == 'admin'; }
+    function isEditor() { return hasProfile() && profile().active == true && profile().role in ['admin', 'editor']; }
+    function changes()  { return request.resource.data.diff(resource.data).affectedKeys(); }
+    function conteudo() {
+      return ['areas', 'tecnologias', 'equipe', 'textos', 'videos', 'acoesExtensao', 'artigos'];
+    }
+
+    match /users/{uid} {
+      allow read:   if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create: if signedIn() && request.auth.uid == uid
+                    && request.resource.data.role == 'pendente'
+                    && request.resource.data.active == true;
+      allow update: if isAdmin()
+                    || (signedIn() && request.auth.uid == uid && !changes().hasAny(['role', 'active']));
+      allow delete: if false;
+    }
+
+    match /config/{doc} {
+      allow read:  if true;
+      allow write: if isEditor();
+    }
+
+    // Conteúdo público: leitura de documentos ativos; escrita para editores; nada é apagado fisicamente.
+    match /{colecao}/{id} {
+      allow read:   if colecao in conteudo() && (resource.data.active == true || isEditor());
+      allow create, update: if colecao in conteudo() && isEditor();
+      allow delete: if false;
+    }
+  }
+}

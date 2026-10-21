@@ -1,0 +1,20 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function profile() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data;
+    }
+    function isEditor() {
+      return request.auth != null && profile().active == true && profile().role in ['admin', 'editor'];
+    }
+
+    // Imagens do site: leitura pública; upload de imagens até 2 MB por editores.
+    match /imagens/{caminho=**} {
+      allow read: if true;
+      allow write: if isEditor()
+                   && request.resource.size < 2 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+      allow delete: if isEditor();
+    }
+  }
+}
