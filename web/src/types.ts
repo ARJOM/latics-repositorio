@@ -29,11 +29,13 @@ export interface Membro {
 export interface Texto {
   id: string
   titulo: string
-  categoria: 'Ensaio' | 'Relato' | 'Opinião'
+  categoria: 'Ensaio' | 'Relato' | 'Opinião' | 'Educação em saúde'
   autor: string
   data: Date
   resumo: string
   conteudo?: string
+  /** Endereço do post original, para textos importados do blog. */
+  blogUrl?: string
 }
 
 export interface Video {
@@ -41,6 +43,7 @@ export interface Video {
   titulo: string
   duracao: string
   youtubeUrl: string
+  descricao?: string
 }
 
 export interface Artigo {

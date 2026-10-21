@@ -46,6 +46,7 @@ function clicouFundo(e: MouseEvent) {
           allowfullscreen
         />
       </div>
+      <p v-if="video.descricao" class="mt-3 max-h-40 overflow-y-auto px-1 text-sm whitespace-pre-line text-navy-foreground/80">{{ video.descricao }}</p>
     </div>
   </dialog>
 </template>
