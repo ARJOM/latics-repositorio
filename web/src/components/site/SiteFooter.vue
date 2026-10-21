@@ -31,15 +31,17 @@ const redes = computed(() =>
           <span class="grid h-10 w-10 place-items-center rounded-lg bg-white p-1" title="UFCG">
             <img src="/logos/ufcg.png" alt="UFCG" width="32" height="32" class="h-8 w-auto" />
           </span>
-          <!-- TODO: trocar pelo logo da UFFS -->
-          <span class="rounded-md border border-navy-foreground/20 px-2.5 py-1">UFFS</span>
+          <span class="grid h-10 w-10 place-items-center rounded-lg bg-white p-1" title="UFFS">
+            <img src="/logos/uffs.png" alt="UFFS" width="23" height="32" class="h-8 w-auto" />
+          </span>
         </div>
       </div>
 
       <div class="space-y-3">
         <p class="text-xs font-semibold tracking-widest text-navy-foreground/50 uppercase">Apoio</p>
-        <!-- TODO: trocar pelo logo do CNPq -->
-        <span class="inline-block rounded-md border border-navy-foreground/20 px-4 py-2 text-sm font-bold">CNPq</span>
+        <span class="inline-block rounded-lg bg-white px-3 py-2" title="CNPq">
+          <img src="/logos/cnpq.png" alt="CNPq — Conselho Nacional de Desenvolvimento Científico e Tecnológico" width="125" height="55" class="h-12 w-auto" />
+        </span>
       </div>
 
       <div class="space-y-3 text-sm">

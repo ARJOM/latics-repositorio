@@ -7,13 +7,18 @@ import NotFoundView from './NotFoundView.vue'
 import { useDocumento } from '@/composables/useConteudo'
 import { mesAno } from '@/utils/format'
 import { renderizarMarkdown } from '@/utils/markdown'
+import { definirSeo, primeiraImagem } from '@/seo'
 
 const route = useRoute()
 const { item: texto, carregando, erro } = useDocumento('textos', computed(() => route.params.id as string))
 
 const corpo = computed(() => (texto.value?.conteudo ? renderizarMarkdown(texto.value.conteudo) : ''))
 
-watch(texto, (t) => t && (document.title = `${t.titulo} — LATICS`))
+watch(
+  texto,
+  (t) =>
+    t && definirSeo({ titulo: `${t.titulo} — LATICS`, descricao: t.resumo || t.titulo, imagem: primeiraImagem(t.conteudo), tipo: 'article' }),
+)
 </script>
 
 <template>

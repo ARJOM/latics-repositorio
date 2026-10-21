@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Mostra uma tecnologia embutida na página (porta do iframe de templates/projetos/detail.html do Django).
+// Mostra uma tecnologia embutida na página (como fazia o site antigo, em Django).
 import { computed } from 'vue'
 import { ExternalLink } from 'lucide-vue-next'
 import { embedYoutube, idYoutube } from '@/utils/youtube'

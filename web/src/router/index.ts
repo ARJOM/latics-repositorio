@@ -5,6 +5,7 @@ const AuthLayout = () => import('@/layouts/AuthLayout.vue')
 const ConfigView = () => import('@/views/admin/ConfigView.vue')
 import { useSessionStore, type Papel } from '@/stores/session'
 import { configs, secoes } from '@/admin/secoes'
+import { definirSeo, paginas } from '@/seo'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -99,7 +100,10 @@ router.beforeEach(async (to) => {
 })
 
 router.afterEach((to) => {
-  document.title = (to.meta.title as string | undefined) ?? 'LATICS — Grupo de Pesquisa'
+  const titulo = to.meta.title ?? 'LATICS — Grupo de Pesquisa'
+  if (to.path.startsWith('/admin')) document.title = titulo
+  // Páginas de detalhe começam com o genérico e trocam ao carregar o documento.
+  else definirSeo(paginas[to.path] ?? { titulo, descricao: paginas['/']!.descricao })
 })
 
 export default router
