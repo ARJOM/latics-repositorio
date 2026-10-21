@@ -20,7 +20,7 @@ function trocarMeta(html: string, seletor: string, valor: string) {
   return html.replace(re, `$1 $2="${esc(valor)}"`)
 }
 
-/** Grava /a/b em dist/a/b.html (servido como /a/b graças a cleanUrls em firebase.json). */
+/** Grava /a/b em dist/a/b/index.html, que o Hosting serve em /a/b sem redirecionar. */
 function gravar(caminho: string, seo: Seo, corpo: string) {
   const descricao = encurtar(seo.descricao)
   let html = modelo.replace(/<title>[^<]*<\/title>/, `<title>${esc(seo.titulo)}</title>`)
@@ -34,7 +34,7 @@ function gravar(caminho: string, seo: Seo, corpo: string) {
   // O Vue substitui este conteúdo ao montar; até lá (ou sem JavaScript) ele fica visível.
   html = html.replace('<div id="app"></div>', `<div id="app">${corpo}</div>`)
 
-  const arquivo = join(dist, `${caminho}.html`)
+  const arquivo = join(dist, caminho, 'index.html')
   mkdirSync(dirname(arquivo), { recursive: true })
   writeFileSync(arquivo, html)
 }
