@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { ArrowUpRight, Search } from 'lucide-vue-next'
-import type { QueryDocumentSnapshot } from 'firebase/firestore'
+import type { QueryDocumentSnapshot } from 'firebase/firestore/lite'
 import PageHeader from '@/components/site/PageHeader.vue'
 import EstadoLista from '@/components/site/EstadoLista.vue'
 import { listarTextos } from '@/services/conteudo'

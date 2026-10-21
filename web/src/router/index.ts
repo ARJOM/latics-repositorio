@@ -3,7 +3,7 @@ import PublicLayout from '@/layouts/PublicLayout.vue'
 
 const AuthLayout = () => import('@/layouts/AuthLayout.vue')
 const ConfigView = () => import('@/views/admin/ConfigView.vue')
-import { useSessionStore, type Papel } from '@/stores/session'
+import type { Papel } from '@/stores/session'
 import { configs, secoes } from '@/admin/secoes'
 import { definirSeo, paginas } from '@/seo'
 
@@ -87,6 +87,9 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to) => {
+  // As páginas públicas não dependem de login: o Auth só é carregado ao entrar no painel.
+  if (!to.path.startsWith('/admin')) return
+  const { useSessionStore } = await import('@/stores/session')
   const session = useSessionStore()
   await session.aguardarPronto()
 

@@ -17,12 +17,14 @@ import {
   writeBatch,
   type QueryConstraint,
   type QueryDocumentSnapshot,
-} from 'firebase/firestore'
-import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage'
-import { db, storage } from '@/firebase'
+} from 'firebase/firestore/lite'
+import { getDownloadURL, getStorage, ref as storageRef, uploadBytes } from 'firebase/storage'
+import { app, db } from '@/firebase'
 import type { NomeColecao } from './conteudo'
 import { palavrasBusca } from '@/utils/busca'
 import type { Perfil } from '@/stores/session'
+
+const storage = getStorage(app)
 
 export type Registro = Record<string, unknown> & { id: string; active: boolean; ordem?: number }
 

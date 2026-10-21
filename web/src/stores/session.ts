@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import {
   createUserWithEmailAndPassword,
+  getAuth,
   onAuthStateChanged,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
@@ -9,8 +10,12 @@ import {
   updateProfile,
   type User,
 } from 'firebase/auth'
-import { doc, onSnapshot, serverTimestamp, setDoc, type Unsubscribe } from 'firebase/firestore'
-import { auth, db } from '@/firebase'
+import { doc, getFirestore, onSnapshot, serverTimestamp, setDoc, type Unsubscribe } from 'firebase/firestore'
+import { app } from '@/firebase'
+
+const auth = getAuth(app)
+// Firestore completo só aqui, pelo onSnapshot do perfil (o restante do site usa o Lite, em @/firebase).
+const db = getFirestore(app)
 
 export type Papel = 'admin' | 'editor' | 'pendente'
 
@@ -25,6 +30,8 @@ export const useSessionStore = defineStore('session', () => {
   const user = ref<User | null>(null)
   const perfil = ref<Perfil | null>(null)
   const pronto = ref(false)
+  /** uid cujo perfil já foi lido (ou falhou), para o login esperar o papel antes de navegar. */
+  const perfilDe = ref<string | null>(null)
 
   const isEditor = computed(() => !!perfil.value?.active && ['admin', 'editor'].includes(perfil.value.role))
   const isAdmin = computed(() => !!perfil.value?.active && perfil.value.role === 'admin')
@@ -45,6 +52,7 @@ export const useSessionStore = defineStore('session', () => {
 
     if (!u) {
       perfil.value = null
+      perfilDe.value = null
       marcarPronto()
       return
     }
@@ -54,18 +62,24 @@ export const useSessionStore = defineStore('session', () => {
       doc(db, 'users', u.uid),
       (snap) => {
         perfil.value = snap.exists() ? (snap.data() as Perfil) : null
+        perfilDe.value = u.uid
         if (perfil.value?.active === false) signOut(auth)
         marcarPronto()
       },
       () => {
         perfil.value = null
+        perfilDe.value = u.uid
         marcarPronto()
       },
     )
   })
 
   async function entrar(email: string, senha: string) {
-    await signInWithEmailAndPassword(auth, email, senha)
+    const { user: u } = await signInWithEmailAndPassword(auth, email, senha)
+    await new Promise<void>((resolver) => {
+      const parar = watch(perfilDe, (uid) => uid === u.uid && (parar(), resolver()))
+      if (perfilDe.value === u.uid) (parar(), resolver())
+    })
   }
 
   async function cadastrar(nome: string, email: string, senha: string) {

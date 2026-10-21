@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { ArrowDown, ArrowUp, Eye, EyeOff, Pencil, Plus, Search } from 'lucide-vue-next'
-import type { QueryDocumentSnapshot } from 'firebase/firestore'
+import type { QueryDocumentSnapshot } from 'firebase/firestore/lite'
 import { secoes } from '@/admin/secoes'
 import { atualizar, listarPagina, listarTodos, trocarOrdem, type Registro, type Situacao } from '@/services/admin'
 import { normalizar } from '@/utils/busca'
