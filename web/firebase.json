@@ -2,6 +2,7 @@
   "hosting": {
     "public": "dist",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "trailingSlash": false,
     "redirects": [
       { "source": "/projeto/:id", "destination": "/tecnologias/:id", "type": 301 }
     ],

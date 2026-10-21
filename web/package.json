@@ -11,8 +11,9 @@
     "type-check": "vue-tsc --build",
     "seed": "tsx scripts/seed.ts",
     "promover": "tsx scripts/promover.ts",
-    "migrar-django": "tsx scripts/migrar-django.ts",
-    "importar-blog": "tsx scripts/importar-blog.ts"
+    "importar-blog": "tsx scripts/importar-blog.ts",
+    "paginas": "tsx scripts/gerar-paginas.ts",
+    "deploy": "npm run build && npm run paginas && firebase deploy --only hosting --project repositorio-latics"
   },
   "dependencies": {
     "dompurify": "^3.4.17",

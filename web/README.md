@@ -30,7 +30,6 @@ Rodam localmente com as credenciais do gcloud (`gcloud auth application-default 
 npm run seed                                  # grava o conteúdo de exemplo (scripts/dados-exemplo.ts)
 npm run seed -- --force                       # idem, sobrescrevendo o que já existe
 npm run promover -- email@exemplo.com admin   # define o papel: admin | editor | pendente
-npm run migrar-django                         # importa os projetos do Django (../db.sqlite3) como tecnologias ocultas
 ```
 
 O primeiro administrador: crie a conta em `/admin/cadastro` e rode `npm run promover -- <seu-email> admin`.
@@ -38,8 +37,13 @@ O primeiro administrador: crie a conta em `/admin/cadastro` e rode `npm run prom
 ## Deploy
 
 ```sh
-npm run build
-firebase deploy                     # hosting + regras + índices
-firebase deploy --only hosting      # só o site
-firebase deploy --only firestore:rules,storage   # só as regras
+npm run deploy                      # build + páginas de SEO + hosting (o caso comum)
+firebase deploy --only firestore:rules,storage,firestore:indexes --project repositorio-latics   # regras e índices
 ```
+
+`npm run deploy` roda `npm run paginas` (`scripts/gerar-paginas.ts`) depois do build: ele lê o Firestore e grava em `dist/`
+um HTML por página pública, texto e tecnologia, com título, descrição e Open Graph próprios, além de `sitemap.xml` e
+`robots.txt`. Isso faz as prévias de links (WhatsApp, redes sociais) e o sitemap funcionarem. Por isso, **textos
+publicados pelo painel só ganham prévia e entrada no sitemap no deploy seguinte**; no navegador aparecem na hora.
+
+Use sempre `--project repositorio-latics` nos comandos `firebase` (a pasta pai tem outro projeto ativo).

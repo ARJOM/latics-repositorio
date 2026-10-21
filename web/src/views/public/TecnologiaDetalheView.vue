@@ -6,11 +6,12 @@ import EmbedViewer from '@/components/site/EmbedViewer.vue'
 import EstadoLista from '@/components/site/EstadoLista.vue'
 import NotFoundView from './NotFoundView.vue'
 import { useDocumento } from '@/composables/useConteudo'
+import { definirSeo } from '@/seo'
 
 const route = useRoute()
 const { item: tec, carregando, erro } = useDocumento('tecnologias', computed(() => route.params.id as string))
 
-watch(tec, (t) => t && (document.title = `${t.titulo} — LATICS`))
+watch(tec, (t) => t && definirSeo({ titulo: `${t.titulo} — LATICS`, descricao: t.texto, imagem: t.imagemUrl }))
 </script>
 
 <template>

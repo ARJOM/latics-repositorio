@@ -12,7 +12,7 @@ import {
   where,
   type QueryConstraint,
   type QueryDocumentSnapshot,
-} from 'firebase/firestore'
+} from 'firebase/firestore/lite'
 import { palavrasBusca } from '@/utils/busca'
 import { db } from '@/firebase'
 import type {
