@@ -10,6 +10,10 @@ export interface Campo {
   obrigatorio?: boolean
   opcoes?: string[]
   ajuda?: string
+  /** Imagens: largura ÷ altura do recorte feito antes do envio. Sem ela, a imagem sobe como veio. */
+  proporcao?: number
+  /** Imagens: largura máxima do arquivo enviado (padrão 1600 px). */
+  larguraMax?: number
 }
 
 export interface Secao {
@@ -41,7 +45,7 @@ export const secoes: Record<string, Secao> = {
       { nome: 'titulo', rotulo: 'Título', tipo: 'texto', obrigatorio: true },
       { nome: 'texto', rotulo: 'Texto', tipo: 'textarea', obrigatorio: true },
       { nome: 'icone', rotulo: 'Ícone', tipo: 'select', opcoes: icones, ajuda: 'Usado quando não há imagem.' },
-      { nome: 'imagemUrl', rotulo: 'Imagem', tipo: 'imagem' },
+      { nome: 'imagemUrl', rotulo: 'Imagem', tipo: 'imagem', proporcao: 16 / 9 },
     ],
   },
   tecnologias: {
@@ -57,7 +61,7 @@ export const secoes: Record<string, Secao> = {
       { nome: 'texto', rotulo: 'Descrição', tipo: 'textarea', obrigatorio: true },
       { nome: 'url', rotulo: 'Link da tecnologia', tipo: 'url' },
       { nome: 'tipo', rotulo: 'Tipo de link', tipo: 'select', opcoes: ['site', 'video'], obrigatorio: true },
-      { nome: 'imagemUrl', rotulo: 'Imagem', tipo: 'imagem', obrigatorio: true },
+      { nome: 'imagemUrl', rotulo: 'Imagem', tipo: 'imagem', obrigatorio: true, proporcao: 16 / 9 },
     ],
   },
   equipe: {
@@ -70,7 +74,7 @@ export const secoes: Record<string, Secao> = {
     campos: [
       { nome: 'nome', rotulo: 'Nome', tipo: 'texto', obrigatorio: true },
       { nome: 'papel', rotulo: 'Papel no grupo', tipo: 'textarea', obrigatorio: true },
-      { nome: 'fotoUrl', rotulo: 'Foto', tipo: 'imagem', ajuda: 'Sem foto, o site mostra as iniciais.' },
+      { nome: 'fotoUrl', rotulo: 'Foto', tipo: 'imagem', ajuda: 'Sem foto, o site mostra as iniciais.', proporcao: 1, larguraMax: 400 },
     ],
   },
   textos: {
@@ -173,8 +177,14 @@ export const configs: Record<string, SecaoConfig> = {
     campos: [
       { nome: 'programa', rotulo: 'Nome do programa', tipo: 'texto', obrigatorio: true },
       { nome: 'descricao', rotulo: 'Descrição', tipo: 'textarea', obrigatorio: true },
-      { nome: 'imagemUrl', rotulo: 'Imagem', tipo: 'imagem' },
+      { nome: 'imagemUrl', rotulo: 'Imagem', tipo: 'imagem', proporcao: 3 / 2 },
       { nome: 'indicadores', rotulo: 'Indicadores', tipo: 'indicadores', ajuda: 'Números de destaque, como "+40 ações".' },
     ],
   },
+}
+
+/** Proporção configurada para um campo de imagem de uma seção ou configuração (16:9 se não houver). */
+export function proporcaoImagem(nome: string, campo = 'imagemUrl') {
+  const campos = (secoes[nome] ?? configs[nome])?.campos ?? []
+  return campos.find((c) => c.nome === campo)?.proporcao ?? 16 / 9
 }
