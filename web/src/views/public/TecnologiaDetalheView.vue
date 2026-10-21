@@ -7,11 +7,16 @@ import EstadoLista from '@/components/site/EstadoLista.vue'
 import NotFoundView from './NotFoundView.vue'
 import { useDocumento } from '@/composables/useConteudo'
 import { definirSeo } from '@/seo'
+import { registrarVisualizacao } from '@/services/estatisticas'
 
 const route = useRoute()
 const { item: tec, carregando, erro } = useDocumento('tecnologias', computed(() => route.params.id as string))
 
-watch(tec, (t) => t && definirSeo({ titulo: `${t.titulo} — LATICS`, descricao: t.texto, imagem: t.imagemUrl }))
+watch(tec, (t) => {
+  if (!t) return
+  definirSeo({ titulo: `${t.titulo} — LATICS`, descricao: t.texto, imagem: t.imagemUrl })
+  registrarVisualizacao('tecnologias', t.id)
+})
 </script>
 
 <template>

@@ -22,6 +22,21 @@ npm install
 npm run dev
 ```
 
+## Estatísticas de visitas
+
+O site conta quantas vezes cada texto e tecnologia foi aberto, cada vídeo foi assistido e cada artigo foi acessado
+(uma vez por item a cada sessão do navegador). Os totais ficam em `estatisticas/{textos|tecnologias|videos|artigos}/itens/{id}`
+no Firestore, campo `total`, e por enquanto só são consultados pelo console do Firebase. As Security Rules aceitam apenas
+somar 1 a itens publicados; a leitura é restrita a editores.
+
+A contagem está **desligada** até o lançamento. Para ligar, troque `VITE_ESTATISTICAS=false` por `true` em `web/.env`,
+publique as regras (se ainda não estiverem no ar) e rode `npm run deploy`:
+
+```sh
+firebase deploy --only firestore:rules --project repositorio-latics
+npm run deploy
+```
+
 ## Scripts de administração
 
 Rodam localmente com as credenciais do gcloud (`gcloud auth application-default login`) e ignoram as Security Rules.
