@@ -80,7 +80,7 @@ export const secoes: Record<string, Secao> = {
     ordenavel: false,
     campos: [
       { nome: 'titulo', rotulo: 'Título', tipo: 'texto', obrigatorio: true },
-      { nome: 'categoria', rotulo: 'Categoria', tipo: 'select', opcoes: ['Ensaio', 'Relato', 'Opinião'], obrigatorio: true },
+      { nome: 'categoria', rotulo: 'Categoria', tipo: 'select', opcoes: ['Educação em saúde', 'Ensaio', 'Relato', 'Opinião'], obrigatorio: true },
       { nome: 'autor', rotulo: 'Autor', tipo: 'texto', obrigatorio: true },
       { nome: 'data', rotulo: 'Data', tipo: 'data', obrigatorio: true },
       { nome: 'resumo', rotulo: 'Resumo', tipo: 'textarea', obrigatorio: true },
@@ -98,6 +98,7 @@ export const secoes: Record<string, Secao> = {
       { nome: 'titulo', rotulo: 'Título', tipo: 'texto', obrigatorio: true },
       { nome: 'youtubeUrl', rotulo: 'Link do YouTube', tipo: 'url', obrigatorio: true },
       { nome: 'duracao', rotulo: 'Duração', tipo: 'texto', ajuda: 'Ex.: 5:10' },
+      { nome: 'descricao', rotulo: 'Descrição', tipo: 'textarea', ajuda: 'Aparece abaixo do player.' },
     ],
   },
   acoesExtensao: {

@@ -1,5 +1,19 @@
 import { FirebaseError } from 'firebase/app'
-import { collection, doc, getDoc, getDocs, orderBy, query, Timestamp, where } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  startAfter,
+  Timestamp,
+  where,
+  type QueryConstraint,
+  type QueryDocumentSnapshot,
+} from 'firebase/firestore'
+import { palavrasBusca } from '@/utils/busca'
 import { db } from '@/firebase'
 import type {
   AcaoExtensao,
@@ -75,4 +89,35 @@ export async function obterAtivo<K extends NomeColecao>(nome: K, id: string): Pr
     if (e instanceof FirebaseError && e.code === 'permission-denied') return null
     throw e
   }
+}
+
+export interface PaginaTextos {
+  itens: Texto[]
+  /** Último documento da página, para buscar a próxima; null quando não há mais. */
+  cursor: QueryDocumentSnapshot | null
+}
+
+/**
+ * Textos publicados, do mais recente ao mais antigo, em páginas.
+ * `termo` busca uma palavra do título (a mais longa digitada; as demais filtram no navegador).
+ */
+export async function listarTextos(opcoes: { ano?: number; termo?: string; cursor?: QueryDocumentSnapshot | null; tamanho?: number }) {
+  const tamanho = opcoes.tamanho ?? 12
+  const palavras = palavrasBusca(opcoes.termo ?? '').sort((a, b) => b.length - a.length)
+  const filtros: QueryConstraint[] = [where('active', '==', true)]
+  if (palavras[0]) filtros.push(where('palavras', 'array-contains', palavras[0]))
+  if (opcoes.ano) {
+    filtros.push(where('data', '>=', Timestamp.fromDate(new Date(opcoes.ano, 0, 1))))
+    filtros.push(where('data', '<', Timestamp.fromDate(new Date(opcoes.ano + 1, 0, 1))))
+  }
+  filtros.push(orderBy('data', 'desc'))
+  if (opcoes.cursor) filtros.push(startAfter(opcoes.cursor))
+  filtros.push(limit(tamanho))
+
+  const snap = await getDocs(query(collection(db, 'textos'), ...filtros))
+  const resto = palavras.slice(1)
+  const itens = snap.docs
+    .map((d) => converter<Texto & { palavras?: string[] }>(d.id, d.data()))
+    .filter((t) => resto.every((p) => t.palavras?.some((x) => x.startsWith(p))))
+  return { itens, cursor: snap.docs.length === tamanho ? snap.docs.at(-1)! : null } satisfies PaginaTextos
 }

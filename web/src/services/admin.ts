@@ -16,6 +16,7 @@ import {
 import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage'
 import { db, storage } from '@/firebase'
 import type { NomeColecao } from './conteudo'
+import { palavrasBusca } from '@/utils/busca'
 import type { Perfil } from '@/stores/session'
 
 export type Registro = Record<string, unknown> & { id: string; active: boolean; ordem?: number }
@@ -34,9 +35,13 @@ export async function obter(colecao: NomeColecao, id: string) {
   return snap.exists() ? ({ id: snap.id, ...paraDate(snap.data()) } as Registro) : null
 }
 
+// Textos guardam as palavras do título para a busca do site.
+const comIndice = (colecao: NomeColecao, dados: Record<string, unknown>) =>
+  colecao === 'textos' && typeof dados.titulo === 'string' ? { ...dados, palavras: palavrasBusca(dados.titulo) } : dados
+
 export async function criar(colecao: NomeColecao, dados: Record<string, unknown>, ordem: number) {
   const ref = await addDoc(collection(db, colecao), {
-    ...dados,
+    ...comIndice(colecao, dados),
     ordem,
     active: true,
     createdAt: serverTimestamp(),
@@ -46,7 +51,7 @@ export async function criar(colecao: NomeColecao, dados: Record<string, unknown>
 }
 
 export async function atualizar(colecao: NomeColecao, id: string, dados: Record<string, unknown>) {
-  await updateDoc(doc(db, colecao, id), { ...dados, updatedAt: serverTimestamp() })
+  await updateDoc(doc(db, colecao, id), { ...comIndice(colecao, dados), updatedAt: serverTimestamp() })
 }
 
 /** Troca a posição de dois itens de uma coleção ordenada manualmente. */
