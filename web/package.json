@@ -10,7 +10,8 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "seed": "tsx scripts/seed.ts",
-    "promover": "tsx scripts/promover.ts"
+    "promover": "tsx scripts/promover.ts",
+    "migrar-django": "tsx scripts/migrar-django.ts"
   },
   "dependencies": {
     "dompurify": "^3.4.17",

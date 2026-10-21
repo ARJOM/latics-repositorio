@@ -30,6 +30,7 @@ Rodam localmente com as credenciais do gcloud (`gcloud auth application-default 
 npm run seed                                  # grava o conteúdo de exemplo (scripts/dados-exemplo.ts)
 npm run seed -- --force                       # idem, sobrescrevendo o que já existe
 npm run promover -- email@exemplo.com admin   # define o papel: admin | editor | pendente
+npm run migrar-django                         # importa os projetos do Django (../db.sqlite3) como tecnologias ocultas
 ```
 
 O primeiro administrador: crie a conta em `/admin/cadastro` e rode `npm run promover -- <seu-email> admin`.
