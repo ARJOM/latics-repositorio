@@ -26,6 +26,19 @@ service cloud.firestore {
       allow write: if isEditor();
     }
 
+    // Contadores de visualização (services/estatisticas.ts): qualquer visitante soma exatamente 1 ao total
+    // de um item publicado; só editores leem. Caminho com 4 segmentos, fora do match genérico abaixo.
+    match /estatisticas/{colecao}/itens/{id} {
+      function publicado() { return get(/databases/$(db)/documents/$(colecao)/$(id)).data.active == true; }
+      function soTotal()   { return request.resource.data.keys().hasOnly(['total']); }
+      allow read:   if isEditor();
+      allow create: if colecao in ['textos', 'tecnologias', 'videos', 'artigos'] && publicado()
+                    && soTotal() && request.resource.data.total == 1;
+      allow update: if colecao in ['textos', 'tecnologias', 'videos', 'artigos'] && publicado()
+                    && soTotal() && request.resource.data.total == resource.data.total + 1;
+      allow delete: if false;
+    }
+
     // Conteúdo público: leitura de documentos ativos; escrita para editores; nada é apagado fisicamente.
     match /{colecao}/{id} {
       allow read:   if colecao in conteudo() && (resource.data.active == true || isEditor());

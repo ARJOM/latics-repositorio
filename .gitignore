@@ -99,6 +99,8 @@ celerybeat-schedule.*
 
 # Environments 
 .env 
+# Configuração do site sem segredos (a do Firebase fica em web/.env.local).
+!web/.env
 .venv 
 env/ 
 venv/ 

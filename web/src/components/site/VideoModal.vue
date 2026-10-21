@@ -3,6 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { X } from 'lucide-vue-next'
 import type { Video } from '@/types'
 import { embedYoutube, idYoutube } from '@/utils/youtube'
+import { registrarVisualizacao } from '@/services/estatisticas'
 
 const props = defineProps<{ video: Video | null }>()
 const emit = defineEmits<{ fechar: [] }>()
@@ -13,7 +14,11 @@ const id = computed(() => idYoutube(props.video?.youtubeUrl))
 // <dialog> nativo: Esc fecha, o foco fica preso dentro e o fundo não rola.
 watch(
   () => props.video,
-  (v) => (v ? dialogo.value?.showModal() : dialogo.value?.close()),
+  (v) => {
+    if (!v) return dialogo.value?.close()
+    dialogo.value?.showModal()
+    registrarVisualizacao('videos', v.id)
+  },
 )
 
 function clicouFundo(e: MouseEvent) {

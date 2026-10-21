@@ -3,6 +3,7 @@ import { ExternalLink, FileText } from 'lucide-vue-next'
 import PageHeader from '@/components/site/PageHeader.vue'
 import EstadoLista from '@/components/site/EstadoLista.vue'
 import { useLista } from '@/composables/useConteudo'
+import { registrarVisualizacao } from '@/services/estatisticas'
 
 const { itens: artigos, carregando, erro } = useLista('artigos')
 </script>
@@ -23,7 +24,14 @@ const { itens: artigos, carregando, erro } = useLista('artigos')
         <h2 class="leading-snug font-bold">{{ a.titulo }}</h2>
         <p class="mt-1 text-sm text-muted-foreground">{{ a.autores }} · <em>{{ a.periodico }}</em> · {{ a.ano }}</p>
       </div>
-      <a :href="a.link" target="_blank" rel="noopener" aria-label="Abrir artigo" class="self-center text-muted-foreground transition hover:text-primary">
+      <a
+        :href="a.link"
+        target="_blank"
+        rel="noopener"
+        aria-label="Abrir artigo"
+        class="self-center text-muted-foreground transition hover:text-primary"
+        @click="registrarVisualizacao('artigos', a.id)"
+      >
         <ExternalLink :size="18" />
       </a>
     </article>
