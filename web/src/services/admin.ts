@@ -5,13 +5,18 @@ import {
   doc,
   getDoc,
   getDocs,
+  limit,
   orderBy,
   query,
   serverTimestamp,
   setDoc,
+  startAfter,
   Timestamp,
   updateDoc,
+  where,
   writeBatch,
+  type QueryConstraint,
+  type QueryDocumentSnapshot,
 } from 'firebase/firestore'
 import { getDownloadURL, ref as storageRef, uploadBytes } from 'firebase/storage'
 import { db, storage } from '@/firebase'
@@ -28,6 +33,40 @@ const paraDate = (data: Record<string, unknown>) =>
 export async function listarTodos(colecao: NomeColecao, campoOrdem: string, direcao: 'asc' | 'desc') {
   const snap = await getDocs(query(collection(db, colecao), orderBy(campoOrdem, direcao)))
   return snap.docs.map((d) => ({ id: d.id, ...paraDate(d.data()) }) as Registro)
+}
+
+export type Situacao = 'todos' | 'publicados' | 'ocultos'
+
+/**
+ * Uma página de documentos (inclusive inativos), para coleções grandes.
+ * `termo` usa o campo `palavras` (só textos): a palavra mais longa vai na consulta, as demais filtram no navegador.
+ */
+export async function listarPagina(
+  colecao: NomeColecao,
+  opcoes: {
+    campo: string
+    direcao: 'asc' | 'desc'
+    situacao: Situacao
+    termo?: string
+    cursor?: QueryDocumentSnapshot | null
+    tamanho?: number
+  },
+) {
+  const tamanho = opcoes.tamanho ?? 25
+  const palavras = palavrasBusca(opcoes.termo ?? '').sort((a, b) => b.length - a.length)
+  const filtros: QueryConstraint[] = []
+  if (opcoes.situacao !== 'todos') filtros.push(where('active', '==', opcoes.situacao === 'publicados'))
+  if (palavras[0]) filtros.push(where('palavras', 'array-contains', palavras[0]))
+  filtros.push(orderBy(opcoes.campo, opcoes.direcao))
+  if (opcoes.cursor) filtros.push(startAfter(opcoes.cursor))
+  filtros.push(limit(tamanho))
+
+  const snap = await getDocs(query(collection(db, colecao), ...filtros))
+  const resto = palavras.slice(1)
+  const itens = snap.docs
+    .map((d) => ({ id: d.id, ...paraDate(d.data()) }) as Registro & { palavras?: string[] })
+    .filter((r) => resto.every((p) => r.palavras?.some((x) => x.startsWith(p))))
+  return { itens, cursor: snap.docs.length === tamanho ? snap.docs.at(-1)! : null }
 }
 
 export async function obter(colecao: NomeColecao, id: string) {

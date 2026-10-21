@@ -61,7 +61,7 @@ async function salvar() {
       const ordem = (existentes[0]?.ordem ?? -1) + 1
       await criar(secao.value.colecao, limpar(), ordem)
     }
-    router.push(`/admin/${chave.value}`)
+    router.push({ path: `/admin/${chave.value}`, query: route.query })
   } catch (e) {
     erro.value = mensagemErro(e)
   } finally {
@@ -71,7 +71,7 @@ async function salvar() {
 </script>
 
 <template>
-  <RouterLink :to="`/admin/${chave}`" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary">
+  <RouterLink :to="{ path: `/admin/${chave}`, query: route.query }" class="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary">
     <ArrowLeft :size="16" /> {{ secao.titulo }}
   </RouterLink>
   <h1 class="mt-3 text-3xl font-extrabold">{{ id ? `Editar ${secao.singular}` : secao.novo }}</h1>
@@ -97,7 +97,7 @@ async function salvar() {
       >
         {{ salvando ? 'Salvando…' : 'Salvar' }}
       </button>
-      <RouterLink :to="`/admin/${chave}`" class="rounded-full border border-border px-6 py-2.5 font-semibold transition hover:border-primary hover:text-primary">
+      <RouterLink :to="{ path: `/admin/${chave}`, query: route.query }" class="rounded-full border border-border px-6 py-2.5 font-semibold transition hover:border-primary hover:text-primary">
         Cancelar
       </RouterLink>
     </div>

@@ -23,6 +23,8 @@ export interface Secao {
   campos: Campo[]
   /** Coleções ordenadas manualmente (campo `ordem`) ganham setas para reordenar. */
   ordenavel: boolean
+  /** Coleções grandes: a lista vem do Firestore em páginas e a busca usa o campo `palavras`. */
+  paginada?: boolean
 }
 
 export const icones = ['FlaskConical', 'Cpu', 'HeartHandshake', 'GraduationCap', 'BookOpen', 'Users', 'Stethoscope', 'Microscope', 'Lightbulb', 'Globe']
@@ -78,6 +80,7 @@ export const secoes: Record<string, Secao> = {
     novo: 'Novo texto',
     colunas: ['titulo', 'autor', 'data'],
     ordenavel: false,
+    paginada: true,
     campos: [
       { nome: 'titulo', rotulo: 'Título', tipo: 'texto', obrigatorio: true },
       { nome: 'categoria', rotulo: 'Categoria', tipo: 'select', opcoes: ['Educação em saúde', 'Ensaio', 'Relato', 'Opinião'], obrigatorio: true },
